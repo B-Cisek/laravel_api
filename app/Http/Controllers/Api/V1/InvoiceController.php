@@ -1,21 +1,22 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api\V1;
 
-use App\Models\Invoice;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreInvoiceRequest;
 use App\Http\Requests\UpdateInvoiceRequest;
+use App\Models\Invoice;
+use App\Http\Resources\V1\InvoiceResource;
+use App\Http\Resources\V1\InvoiceCollection;
 
 class InvoiceController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
+     * @return InvoiceCollection
      */
     public function index()
     {
-        //
+        return new InvoiceCollection(Invoice::paginate());
     }
 
     /**
@@ -40,14 +41,12 @@ class InvoiceController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Invoice  $invoice
-     * @return \Illuminate\Http\Response
+     * @param Invoice $invoice
+     * @return InvoiceResource
      */
     public function show(Invoice $invoice)
     {
-        //
+        return new InvoiceResource($invoice);
     }
 
     /**

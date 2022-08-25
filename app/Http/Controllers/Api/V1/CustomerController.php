@@ -2,82 +2,61 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Filters\V1\CustomerFilter;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreCustomerRequest;
 use App\Http\Requests\UpdateCustomerRequest;
 use App\Models\Customer;
 use App\Http\Resources\V1\CustomerResource;
 use App\Http\Resources\V1\CustomerCollection;
+use Illuminate\Http\Request;
 
 class CustomerController extends Controller
 {
-    /**
-     * @return CustomerCollection
-     */
-    public function index()
+    public function index(Request $request): CustomerCollection
     {
-        return new CustomerCollection(Customer::paginate());
+        $filter = new CustomerFilter();
+        $queryItems = $filter->transform($request);
+
+        if (count($queryItems) === 0) {
+            return new CustomerCollection(Customer::paginate());
+        } else {
+            $customer = Customer::where($queryItems)->paginate();
+            return new CustomerCollection($customer->appends($request)->query());
+        }
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function create()
     {
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \App\Http\Requests\StoreCustomerRequest  $request
-     * @return \Illuminate\Http\Response
-     */
+
     public function store(StoreCustomerRequest $request)
     {
         //
     }
 
-    /**
-     * @param Customer $customer
-     * @return CustomerResource
-     */
-    public function show(Customer $customer)
+
+    public function show(Customer $customer): CustomerResource
     {
         return new CustomerResource($customer);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Customer  $customer
-     * @return \Illuminate\Http\Response
-     */
+
     public function edit(Customer $customer)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \App\Http\Requests\UpdateCustomerRequest  $request
-     * @param  \App\Models\Customer  $customer
-     * @return \Illuminate\Http\Response
-     */
+
     public function update(UpdateCustomerRequest $request, Customer $customer)
     {
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Customer  $customer
-     * @return \Illuminate\Http\Response
-     */
+
     public function destroy(Customer $customer)
     {
         //
